@@ -99,7 +99,6 @@ function provideYearData(year: number): RankType[] {
       finding[0].femaleRankChange = filtered[i].rankChange;
     }
   }
-  console.log("hello");
   // This is just a reference for the return value's format. Delete this and fill your own
   // proper code to return the correct data.
   return result;
@@ -122,13 +121,18 @@ function provideYearData(year: number): RankType[] {
 //           {year: 2018, rank: 380}]
 function provideChartData(name: string, gender: string): CharDataType[] {
   // TODO: Fill in this function. (2 points)
-
+  let searching = records.filter(data => data.name == name && data.gender == gender)
   // This is just a reference for the return value's format. Delete this and fill your own
+  let result:CharDataType[] = [];
   // proper code to return the correct data.
-  return [
-    { year: 2001, rank: 3 },
-    { year: 2002, rank: undefined },
-  ];
+  for(let i=0; i<searching.length; i++){
+      let temp : CharDataType = {
+        year : searching[i].year,
+        rank : searching[i].rank
+      };
+      result.push(temp);
+  }
+  return result;
 }
 
 // `handleSignUpFormSubmit(form)` is called when a user submits the sign up form.

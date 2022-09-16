@@ -53,14 +53,19 @@ function provideYearData(year) {
     for (var i = 0; i < filtered.length; i++) {
         _loop_1(i);
     }
-    console.log("hello");
     return result;
 }
 function provideChartData(name, gender) {
-    return [
-        { year: 2001, rank: 3 },
-        { year: 2002, rank: undefined },
-    ];
+    var searching = records.filter(function (data) { return data.name == name && data.gender == gender; });
+    var result = [];
+    for (var i = 0; i < searching.length; i++) {
+        var temp = {
+            year: searching[i].year,
+            rank: searching[i].rank
+        };
+        result.push(temp);
+    }
+    return result;
 }
 function handleSignUpFormSubmit(form) {
     var alertMessage = "TODO: Fill in this alert message properly";
