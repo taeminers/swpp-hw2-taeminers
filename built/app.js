@@ -1,16 +1,60 @@
 var records = [];
 function parseAndSave(text) {
+    var splitted = text.split(/(?:\n|\n)+/).filter(function (el) { return el.length != 0; });
+    var headers = splitted.splice(0, 1)[0].split(",");
+    for (var i = 0; i < splitted.length; i++) {
+        var record = splitted[i].split(",");
+        if (record[4] == null) {
+            var toAdd = {
+                year: +record[0],
+                rank: +record[1],
+                name: record[2],
+                gender: record[3],
+                rankChange: null
+            };
+        }
+        else {
+            var toAdd = {
+                year: +record[0],
+                rank: +record[1],
+                name: record[2],
+                gender: record[3],
+                rankChange: +record[4]
+            };
+        }
+        records.push(toAdd);
+    }
 }
 function provideYearData(year) {
-    return [
-        {
-            rank: 1,
-            male: "John",
-            maleRankChange: 0,
-            female: "Christina",
-            femaleRankChange: -2
-        },
-    ];
+    var result = [];
+    var filtered = records.filter(function (data) { return data.year == year; });
+    for (var i = 1; i <= (filtered.length / 2); i++) {
+        var indiRank = {
+            rank: i,
+            male: null,
+            maleRankChange: null,
+            female: null,
+            femaleRankChange: null
+        };
+        result.push(indiRank);
+    }
+    var _loop_1 = function (i) {
+        var temp = filtered[i].rank;
+        var finding = result.filter(function (data) { return data.rank == temp; });
+        if (filtered[i].gender === 'M' && finding.length > 0) {
+            finding[0].male = filtered[i].name;
+            finding[0].maleRankChange = filtered[i].rankChange;
+        }
+        else if (filtered[i].gender === 'F' && finding.length > 0) {
+            finding[0].female = filtered[i].name;
+            finding[0].femaleRankChange = filtered[i].rankChange;
+        }
+    };
+    for (var i = 0; i < filtered.length; i++) {
+        _loop_1(i);
+    }
+    console.log("hello");
+    return result;
 }
 function provideChartData(name, gender) {
     return [

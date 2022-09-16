@@ -1,5 +1,7 @@
 // TODO: edit this file
 
+
+
 type RecordType = {
   year: number;
   rank: number;
@@ -29,7 +31,35 @@ let records: RecordType[] = [];
 //                 or the data sequence (e.g., rank order).
 function parseAndSave(text: string): void {
   // TODO: Fill this function. (3 points)
+  //text is string of all the data in the csv file
+  //in the form of "year,rank,name,gender,rankChange\n2001,1,Jacob,M,\n2001,2,Michael,M,\n2001,3,Matthew,M,\n2001,4,Joshua,M,\
+  //use regex to split into array, and make all of them into type Recordtype
+  let splitted = text.split(/(?:\n|\n)+/).filter(function(el) {return el.length !=0});
+  let headers = splitted.splice(0,1)[0].split(","); //remove the header of the file
+  for (let i=0; i<splitted.length; i++){
+    let record = splitted[i].split(",");
+    if(record[4] == null){
+      var toAdd : RecordType = {
+        year : +record[0] ,
+        rank : +record[1] ,
+        name : record[2] ,
+        gender : record[3] ,
+        rankChange : null
+      };
+    }else{
+      var toAdd : RecordType = {
+        year : +record[0] ,
+        rank : +record[1] ,
+        name : record[2] ,
+        gender : record[3] ,
+        rankChange : +record[4]
+      };
+    }
+    records.push(toAdd);
+  }
 }
+
+
 
 // `provideYearData(year)` is a function that receives a year and returns an array of data object corresponding to that year.
 // Note that male and female record with the same rank should be joined together to form one object.
@@ -43,18 +73,36 @@ function parseAndSave(text: string): void {
 // IMPORTANT NOTE: you should NOT assume the number of data corresponding to the given year.
 function provideYearData(year: number): RankType[] {
   // TODO: Fill in this function. (5 points)
+  
+  let result : RankType[] = [];
 
+  let filtered = records.filter(data => data.year == year);
+  for (let i =1; i<=(filtered.length/2); i++){
+    let indiRank : RankType = {
+        rank : i,
+        male : null,
+        maleRankChange : null,
+        female : null,
+        femaleRankChange : null
+    };
+    result.push(indiRank)
+  }
+  
+  for (let i=0; i<filtered.length; i++){
+    let temp = filtered[i].rank;
+    let finding = result.filter(data => data.rank == temp);
+    if(filtered[i].gender === 'M' && finding.length >0){
+      finding[0].male = filtered[i].name;
+      finding[0].maleRankChange = filtered[i].rankChange;
+    }else if(filtered[i].gender === 'F' && finding.length >0) {
+      finding[0].female = filtered[i].name;
+      finding[0].femaleRankChange = filtered[i].rankChange;
+    }
+  }
+  console.log("hello");
   // This is just a reference for the return value's format. Delete this and fill your own
   // proper code to return the correct data.
-  return [
-    {
-      rank: 1,
-      male: "John",
-      maleRankChange: 0,
-      female: "Christina",
-      femaleRankChange: -2,
-    },
-  ];
+  return result;
 }
 
 // provideChartData(name, gender) is a function called when a user wants
