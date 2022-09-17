@@ -142,7 +142,7 @@ function handleSignUpFormSubmit(form: FormType): {
   alertMessage: string;
   validationResults: ValidationResultType[];
 } {
-  let alertMessage = "TODO: Fill in this alert message properly";
+  let alertMessage = "";
   // TODO: Fill in the rest of function to get the HTML form element as above.
 
   // Hint: you can use the `RegExp` class for matching a string.
@@ -153,17 +153,127 @@ function handleSignUpFormSubmit(form: FormType): {
   // for the valid input fields. (See the example below.)
   // Below is just a reference for the return value's format. Delete this and fill your own
   // proper code to return the correct data.
-
+  //take data from form,  alertmessage list if the input datas are not correct, specifying which 
+  //fields we have to correct. ValidationResultType for each field
   // IMPORTANT NOTE: You must use the argument `form` rather than directly using APIs such as `document.getElementId` or `document.querySelector`.
   //                 Plus, please do not call `alert` function here.
   //                 For debugging purpose, you can use `console.log`.
+ let firstName = form['first-name'];
+ let lastName = form['last-name'];
+ let mail = form.email;
+ let dob = form['date-of-birth'];
+ 
+ //validation process
+ //1. email.
+ const regexMail = (/^[^\s@]+@[^\s@]+.[a-zA-Z]{2,3}$/);
+ if(mail.value.match(regexMail)){
+  var validMail : ValidationResultType = {
+    name : "email",
+    valid : true ,
+    message : null
+  };
+ }else{
+  var validMail : ValidationResultType = {
+    name : "email",
+    valid : false ,
+    message : "Invalid email"
+  };
+ }
+ 
+
+ 
+ //2. firstname & lastname as same conditions apply
+ const regexName = (/^[A-Z][a-z]*/);
+ if(firstName.value.match((regexName))){
+  var validFN : ValidationResultType = {
+    name : "first-name",
+    valid : true,
+    message : null
+  };
+}else {
+  var validFN : ValidationResultType = {
+    name : "first-name",
+    valid : false,
+    message : "Invalid first name"
+  };
+}
+//lastname
+if(lastName.value.match((regexName))){
+  var validLN : ValidationResultType = {
+    name : "last-name",
+    valid : true,
+    message : null
+  };
+}else {
+  var validLN : ValidationResultType = {
+    name : "last-name",
+    valid : false,
+    message : "Invalid last name"
+  };
+}
+
+//dob
+let toSplit = dob.value.split("-");
+if(parseInt(toSplit[0]) <= 2022 && parseInt(toSplit[0]) >= 1900){
+  if(parseInt(toSplit[1]) <=12 && parseInt(toSplit[1]) >= 1 && toSplit[1].length ==2){
+    if(parseInt(toSplit[2]) <= 31 && parseInt(toSplit[2]) >= 1 && toSplit[1].length == 2){
+      var validDOB : ValidationResultType = {
+        name : "date-of-birth",
+        valid : true,
+        message : null
+      };
+    }else {
+      var validDOB : ValidationResultType = {
+        name : "date-of-birth",
+        valid : false,
+        message : "Invalid date of birth"
+      };
+    }
+  }else {
+    var validDOB : ValidationResultType = {
+      name : "date-of-birth",
+      valid : false,
+      message : "Invalid date of birth"
+    };
+  }
+}else{
+  var validDOB : ValidationResultType = {
+    name : "date-of-birth",
+    valid : false,
+    message : "Invalid date of birth"
+  };
+}
+
+if(validFN.valid == false || validLN.valid == false || validDOB.valid == false || validMail.valid == false){
+  alertMessage += "You must correct:\n\n"
+  if(validFN.valid == false){
+    alertMessage += "First Name";
+    alertMessage += "\n";
+  }
+  if(validLN.valid == false){
+    alertMessage += "Last Name";
+    alertMessage += "\n";
+  }
+  if(validDOB.valid == false){
+    alertMessage += "Date of Birth";
+    alertMessage += "\n";
+  }
+  if(validMail.valid == false){
+    alertMessage += "Email";
+    alertMessage += "\n";
+  }
+}else{
+  alertMessage += "Successfully Submitted!"
+}
+
+
   return {
     alertMessage: alertMessage,
     validationResults: [
-      { name: "first-name", valid: true, message: null },
-      { name: "last-name", valid: false, message: "Invalid last name" },
-      { name: "email", valid: true, message: null },
-      { name: "date-of-birth", valid: false, message: "Invalid date of birth" },
+      { name: validFN.name, valid: validFN.valid, message: validFN.message },
+      { name: validLN.name, valid: validLN.valid, message: validLN.message },
+      { name: validMail.name, valid: validMail.valid, message: validMail.message },
+      { name: validDOB.name, valid: validDOB.valid, message: validDOB.message },
     ],
   };
 }
